@@ -36,3 +36,57 @@ contract Token {
     }
 
 }
+
+// Helper function defined outside of a contract
+function helper(uint x) pure returns (uint) {
+    return x * 2;
+}
+
+contract Purchase {
+    address public seller;
+
+    modifier onlySeller() {
+        require(msg.sender == seller, "Only seller can call this");
+        _;
+    }
+
+    function abort() public view onlySeller {
+        require(msg.sender == seller, "Only seller can call this");
+    }
+}
+
+contract SimpleAuction {
+    event HighestBidIncreased(address bidder, uint amount); // Event
+
+    function bid() public payable {
+        //...
+        emit HighestBidIncreased(msg.sender, msg.value)
+    }
+}
+
+error NotEnoughFunds(uint requested, uint available);
+
+contract Token {
+    mapping(address => uint) balances;
+    function transfer(address to, uint amount) public {
+        uint balance = balances[msg.sender];
+        if (balance < amount) {
+            revert NotEnoughFunds(amount, balance);
+        balances[msg.sender] -= amount;
+        balances[to] += amount;
+        }
+    }
+}
+
+contract Ballot {
+    struct Voter(
+        uint weight;
+        bool voted;
+        address delete;
+        uint vote;
+    )
+}
+
+contract Purchase {
+    enum State { Created, Locked, Inactive }
+}

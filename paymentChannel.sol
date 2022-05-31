@@ -19,7 +19,7 @@ contract SimplePaymentChannel {
         require(isValidSignature(amount, signature));
 
         recipient.transfer(amount);
-        selfdestruct(sender)
+        selfdestruct(sender);
     }
 
     /// the sender can extend the expiration at any time
