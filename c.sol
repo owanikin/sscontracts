@@ -25,3 +25,21 @@ contract C {
     function g(uint[] storage) internal pure {}
     function h(uint[] memory) public pure {}
 }
+
+contract D {
+    bytes s = "Storage";
+    function f(bytes calldata c, string memory m, bytes16 b) public view {
+        bytes memory a = bytes.concat(s, c, c[:2], "Literal", bytes(m), b);
+        assert((s.length + c.length + 2 + 7 + bytes(m).length + 16) == a.length);
+    }
+}
+
+contract E {
+    function f(uint len) public pure {
+        uint[] memory a = new uint[](7);
+        bytes memory b = new bytes(len);
+        assert(a.length == 7);
+        assert(b.length == len);
+        a[6] = 8;
+    }
+}
