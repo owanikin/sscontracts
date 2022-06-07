@@ -43,3 +43,32 @@ contract E {
         a[6] = 8;
     }
 }
+
+contract F {
+    function f() public pure {
+        g([uint(1), 2, 3]);
+    }
+    function g(uint[3] memory) public pure {
+        uint[3] memory x = [uint(7), uint(8), uint(9), uint(10)];
+        return x;
+    }
+}
+
+contract G {
+    function f() public pure returns (uint24[2][4] memory) {
+        uint24[2][4] memory x = [[uint24(0x1), 1], [0xffffff, 2], [uint24(0xff), 3], [uint24(0xffff), 4]];
+        // The following does not work, because some of the inner arrays are not of the right type.
+        // uint[2][4] memory x = [[0x1, 1], [0xffffff, 2], [0xfff, 3], [0xffffff, 4]]
+        return x;
+    }
+
+    // To initialized dunamically-sized arrays, you have to assign the individual elements.
+    contract H {
+        function f() public pure {
+            uint[] memory x = new uint[](3);
+            x[0] = 1;
+            x[1] = 5;
+            x[2] = 4;
+        }
+    }
+}
