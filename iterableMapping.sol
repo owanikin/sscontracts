@@ -127,3 +127,37 @@ contract Consumer {
     function setFeed(InfoFeed addr) public { feed = addr; }
     function callFeed() public { feed.info{value: 10, gas:800}();}
 }
+
+contract D {
+    mapping(uint => uint) data;
+
+    function f() public {
+        set({value: 2, key: 5});
+    }
+
+    function set(uint key, uint value) public {
+        data[key] = value;
+    }
+}
+
+contract E {
+    uint public x;
+    constructor(uint a) payable {
+        x = a;
+    }
+}
+
+contract F {
+    E e = new E(10);  // will be executed as part of C's constructor
+
+    function createE(uint arg) public {
+        E newE = new E(arg);
+        newE.x();
+    }
+
+    function createAndEndowE(uint arg, uint amount) public payable {
+        // Send ether along with the creation
+        E newE = new E{value: amount}(arg);
+        newE.x();
+    }
+}
