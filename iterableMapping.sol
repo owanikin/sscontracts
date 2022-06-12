@@ -161,3 +161,30 @@ contract F {
         newE.x();
     }
 }
+
+contract F {
+    uint public x;
+    constructor(uint a) {
+        x = a;
+    }
+}
+
+contract G {
+    function createdSalted(bytes32 salt, uint arg) public {
+        // This complicated expression just tells you how the address
+        // can be pre-computed. It is just there for illustration.
+        // You actually only need ``new D{salt: salt}(arg)``.
+        address predictedAddress = address(uint160(uint(keccak256(abi.encodePacked(
+            bytes1(0xff),
+            address(this),
+            salt,
+            keccak256(abi.encodePacked(
+                type(F).creationCode,
+                arg
+            ))
+        )))));
+
+        F f = new F{salt: salt}(arg);
+        require(address(f) == predictedAddress);
+    }
+}
